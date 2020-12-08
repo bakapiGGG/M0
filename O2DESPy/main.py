@@ -24,8 +24,8 @@ if __name__ == '__main__':
     Logger.info("Demo 1 - Hello world")
     sim1 = HelloWorld(10, seed=3)
     hc1 = sim1.add_hour_counter()
-    # sim1.run(event_count=10)
-    # sim1.run(speed=10)
+    sim1.run(event_count=10)
+    sim1.run(speed=10)
     sim1.run(terminate=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
     sim1.run(duration=datetime.timedelta(seconds=30))
 
