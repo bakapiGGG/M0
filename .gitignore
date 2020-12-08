@@ -1,0 +1,8 @@
+*__pycache__*
+*.pyc
+*txt
+.idea*
+.idea
+*.log
+output*
+venv*
