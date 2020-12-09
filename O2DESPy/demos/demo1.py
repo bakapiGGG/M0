@@ -45,7 +45,8 @@ class HelloWorld(Sandbox):
     def arrive(self):
         Logger.info("{0}\tHello World #{1}!".format(self.clock_time, self.__count))
         self.__count += 1
-        self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
+        # self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
+        self.schedule([self.arrive], timedelta(seconds=5))
 
 
 

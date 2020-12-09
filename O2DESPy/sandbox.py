@@ -92,7 +92,10 @@ class Sandbox(ISandbox):
         self.__children = []
         self.__clock_time = datetime.datetime.min
         self.__realtime_for_last_run = None
-        self.__on_warmup = [[self.warmup_handler()]]
+        if self.warmup_handler() == -1:
+            self.__on_warmed_up = []
+        else:
+            self.__on_warmed_up = [[self.warmup_handler()]]
         self.__hour_counters = []
 
     @property
@@ -146,12 +149,12 @@ class Sandbox(ISandbox):
         return self.__parent.clock_time
 
     @property
-    def on_warmup(self):
-        return self.__on_warmup
+    def on_warmed_up(self):
+        return self.__on_warmed_up
 
-    @on_warmup.setter
-    def on_warmup(self, value):
-        self.__on_warmup.append(value)
+    @on_warmed_up.setter
+    def on_warmed_up(self, value):
+        self.__on_warmed_up.append(value)
 
     @property
     def hour_counters(self):
@@ -266,13 +269,13 @@ class Sandbox(ISandbox):
     def add_child(self, child):
         self.__children.append(child)
         child.parent = self
-        self.__on_warmup += child.on_warmup
+        self.__on_warmed_up += child.on_warmed_up
         return child
 
     def add_hour_counter(self, keep_history=False):
         hc = HourCounter(self, keep_history=keep_history)
         self.__hour_counters.append(hc)
-        self.__on_warmup.append([hc.warmed_up, {'clock_time': self.__clock_time}])
+        self.__on_warmed_up.append([hc.warmed_up])
         return hc
 
     def to_string(self):
@@ -291,7 +294,7 @@ class Sandbox(ISandbox):
             if self.__parent is not None:
                 return self.__parent.warmup(kwargs['till'])
             result = self.run(terminate=kwargs['till'])
-            for func in self.__on_warmup:
+            for func in self.__on_warmed_up:
                 if len(func) == 1:
                     func[0]()
                 else:
