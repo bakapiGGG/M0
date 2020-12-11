@@ -1,5 +1,5 @@
 from application.config import Config
-from demos.demo1 import HelloWorld
+from O2DESPy_demos.demo1 import HelloWorld
 import time
 import datetime
 from log.logger import Logger
