@@ -1,5 +1,5 @@
-from sandbox import Sandbox
-from log.logger import Logger
+from O2DESPy.sandbox import Sandbox
+from O2DESPy.log.logger import Logger
 from datetime import timedelta
 import random
 

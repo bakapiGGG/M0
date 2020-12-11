@@ -1,8 +1,8 @@
-from application.config import Config
+from O2DESPy.application.config import Config
 from O2DESPy_demos.demo1 import HelloWorld
 import time
 import datetime
-from log.logger import Logger
+from O2DESPy.log.logger import Logger
 
 if __name__ == '__main__':
     run_code = 'O2DESPy'

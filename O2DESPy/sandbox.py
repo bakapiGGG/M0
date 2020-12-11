@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from sortedcontainers import SortedSet
-from event import Event
-from pointer import Pointer
-from hour_counter import HourCounter
-from assets import IAssets
+from O2DESPy.event import Event
+from O2DESPy.pointer import Pointer
+from O2DESPy.hour_counter import HourCounter
+from O2DESPy.assets import IAssets
 import pandas as pd
 import time
-from log.logger import Logger
+from O2DESPy.log.logger import Logger
 import datetime
 
 
