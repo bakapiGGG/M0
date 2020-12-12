@@ -85,7 +85,7 @@ class Sandbox(ISandbox):
     __count = 0
 
     def __init__(self, seed=0, id=None, pointer=Pointer()):
-        super().__init__(id, pointer, seed)
+        super().__init__(seed, id, pointer)
         assets = SandboxStatics()
         self.__assets = assets
         self.__seed = seed
