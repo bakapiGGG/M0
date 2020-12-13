@@ -29,10 +29,6 @@ if __name__ == '__main__':
     # sim1.run(speed=10)
     # sim1.run(terminate=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
     sim1.run(duration=datetime.timedelta(seconds=30))
-
-
-
-
-
+    Logger.critical('use time {}'.format(time.time() - start_time))
 
 
