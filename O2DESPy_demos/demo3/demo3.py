@@ -41,18 +41,18 @@ class MMcQueue(Sandbox):
     def arrive(self):
         if self.__in_service < self.__capacity:
             self.__in_service += 1
-            print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2}".format(self.clock_time, self.__in_queue, self.__in_service))
+            print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
             self.schedule([self.depart], timedelta(seconds=round(random.expovariate(1 / self.__hourly_service_rate))))
         else:
             self.__in_queue += 1
-            print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2}".format(self.clock_time, self.__in_queue, self.__in_service))
+            print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
 
         self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
 
     def depart(self):
         if self.__in_queue < 0:
             self.__in_queue -= 1
-            print("{0}\tDepart and Start Service (In-Queue: {1}, In-Service: {2}".format(self.clock_time, self.__in_queue, self.__in_service))
+            print("{0}\tDepart and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
             self.schedule([self.depart], timedelta(seconds=round(random.expovariate(1 / self.__hourly_service_rate))))
         else:
             self.__in_service -= 1
