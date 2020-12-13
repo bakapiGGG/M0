@@ -1,4 +1,4 @@
-from application.config import Config
+from O2DESPy.application.config import Config
 import logging.handlers
 import sys
 import os

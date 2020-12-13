@@ -1,4 +1,4 @@
-from log.logger import Logger
+from O2DESPy.log.logger import Logger
 
 
 class Event:
