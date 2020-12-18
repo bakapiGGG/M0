@@ -21,17 +21,9 @@ class HelloWorld(Sandbox):
     def hourly_arrival_rate(self):
         return self.__hourly_arrival_rate
 
-    @hourly_arrival_rate.setter
-    def hourly_arrival_rate(self, value):
-        self.__hourly_arrival_rate = value
-
     @property
     def count(self):
         return self.__count
-
-    @count.setter
-    def count(self, value):
-        self.__count = value
 
     @property
     def seed(self):
