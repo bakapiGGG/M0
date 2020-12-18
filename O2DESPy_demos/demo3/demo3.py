@@ -42,18 +42,18 @@ class MMcQueue(Sandbox):
         if self.__in_service < self.__capacity:
             self.__in_service += 1
             print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
-            self.schedule([self.depart], timedelta(seconds=round(random.expovariate(1 / self.__hourly_service_rate))))
+            self.schedule([self.depart], timedelta(hours=round(random.expovariate(1 / self.__hourly_service_rate))))
         else:
             self.__in_queue += 1
             print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
 
-        self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
+        self.schedule([self.arrive], timedelta(hours=round(random.expovariate(1 / self.__hourly_arrival_rate))))
 
     def depart(self):
         if self.__in_queue < 0:
             self.__in_queue -= 1
             print("{0}\tDepart and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
-            self.schedule([self.depart], timedelta(seconds=round(random.expovariate(1 / self.__hourly_service_rate))))
+            self.schedule([self.depart], timedelta(hours=round(random.expovariate(1 / self.__hourly_service_rate))))
         else:
             self.__in_service -= 1
             print("{0}\tDepart (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
@@ -79,5 +79,5 @@ if __name__ == '__main__':
     Logger.info("Demo 3 - MMcQueue")
     sim1 = MMcQueue(hourly_arrival_rate=5, hourly_service_rate=8, capacity=2)
     hc1 = sim1.add_hour_counter()
-    sim1.run(duration=datetime.timedelta(minutes=5))
+    sim1.run(duration=datetime.timedelta(hours=5))
     Logger.critical('use time {}'.format(time.time() - start_time))
