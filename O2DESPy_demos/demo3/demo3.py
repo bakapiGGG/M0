@@ -15,6 +15,7 @@ class MMcQueue(Sandbox):
         self.__capacity = capacity
         self.__in_queue = 0
         self.__in_service = 0
+        self.__seed = seed
 
         self.schedule([self.arrive], timedelta(seconds=0))
 
@@ -38,6 +39,14 @@ class MMcQueue(Sandbox):
     def in_service(self):
         return self.__in_service
 
+    @property
+    def seed(self):
+        return self.__seed
+
+    @seed.setter
+    def seed(self, value):
+        self.__seed = value
+
     def arrive(self):
         if self.__in_service < self.__capacity:
             self.__in_service += 1
@@ -45,12 +54,12 @@ class MMcQueue(Sandbox):
             self.schedule([self.depart], timedelta(hours=round(random.expovariate(1 / self.__hourly_service_rate))))
         else:
             self.__in_queue += 1
-            print("{0}\tArrive and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
+            print("{0}\tArrive and Join Queue (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
 
         self.schedule([self.arrive], timedelta(hours=round(random.expovariate(1 / self.__hourly_arrival_rate))))
 
     def depart(self):
-        if self.__in_queue < 0:
+        if self.__in_queue > 0:
             self.__in_queue -= 1
             print("{0}\tDepart and Start Service (In-Queue: {1}, In-Service: {2})".format(self.clock_time, self.__in_queue, self.__in_service))
             self.schedule([self.depart], timedelta(hours=round(random.expovariate(1 / self.__hourly_service_rate))))
@@ -77,7 +86,7 @@ if __name__ == '__main__':
 
     # Demo 1
     Logger.info("Demo 3 - MMcQueue")
-    sim1 = MMcQueue(hourly_arrival_rate=5, hourly_service_rate=8, capacity=2)
+    sim1 = MMcQueue(hourly_arrival_rate=2, hourly_service_rate=8, capacity=4)
     hc1 = sim1.add_hour_counter()
-    sim1.run(duration=datetime.timedelta(hours=5))
+    sim1.run(duration=datetime.timedelta(hours=50))
     Logger.critical('use time {}'.format(time.time() - start_time))

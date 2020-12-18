@@ -11,6 +11,14 @@ class Queue(Sandbox):
     @property
     def number_waiting(self):
         return self.__number_waiting
+    
+    @property
+    def seed(self):
+        return self.__seed
+
+    @seed.setter
+    def seed(self, value):
+        self.__seed = value
 
     def enqueue(self):
         self.__number_waiting += 1
