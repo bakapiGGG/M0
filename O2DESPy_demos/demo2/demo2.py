@@ -44,6 +44,7 @@ class BirthDeath(Sandbox):
     def birth(self):
         self.__population += 1
         Logger.info("{0}\tBirth (Population: #{1}!".format(self.clock_time, self.__population))
+        print("{0}\tBirth (Population: #{1}!)".format(self.clock_time, self.__population))
         self.schedule([self.birth], timedelta(hours=round(random.expovariate(1 / self.__hourly_birth_rate))))
         self.schedule([self.death], timedelta(hours=round(random.expovariate(1 / self.__hourly_death_rate))))
 
@@ -69,11 +70,11 @@ if __name__ == '__main__':
 
     # Demo 2
     Logger.info("Demo 2 - Birth Death Process")
-    sim2 = BirthDeath(15, 11, seed=3)
+    sim2 = BirthDeath(2, 3, seed=3)
     hc2 = sim2.add_hour_counter()
-    sim2.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
+    # sim2.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
     # sim2.run(event_count=10)
     # sim2.run(speed=10)
     # sim2.run(terminate=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
-    sim2.run(duration=datetime.timedelta(hours==30))
+    sim2.run(duration=datetime.timedelta(hours=30))
     Logger.critical('use time {}'.format(time.time() - start_time))
