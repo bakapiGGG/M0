@@ -1,4 +1,5 @@
 from O2DESPy.sandbox import Sandbox
+from O2DESPy.log.logger import Logger
 from datetime import timedelta
 import random
 
@@ -31,10 +32,11 @@ class Generator(Sandbox):
     def generate(self):
         if self.__count > 0:
             print("{0}\t{1}\tGenerate. Count: {2}".format(self.clock_time, type(self).__name__, self.__count))
+            Logger.info("{0}\t{1}\tGenerate. Count: {2}".format(self.clock_time, type(self).__name__, self.__count))
             for func in self.__on_generate:
                 if len(func) == 1:
                     func[0]()
                 else:
                     func[0](**func[1])
         self.__count += 1
-        self.schedule([self.generate], timedelta(seconds=round(random.expovariate(1 / self.__hourly_rate))))
+        self.schedule([self.generate], timedelta(hours=round(random.expovariate(1 / self.__hourly_rate))))

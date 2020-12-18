@@ -49,7 +49,7 @@ class HelloWorld(Sandbox):
         Logger.info("{0}\tHello World #{1}!".format(self.clock_time, self.__count))
         self.__count += 1
         # self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
-        self.schedule([self.arrive], timedelta(seconds=5))
+        self.schedule([self.arrive], timedelta(hours=5))
 
 
 if __name__ == '__main__':
@@ -76,5 +76,5 @@ if __name__ == '__main__':
     # sim1.run(event_count=10)
     # sim1.run(speed=10)
     # sim1.run(terminate=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
-    sim1.run(duration=datetime.timedelta(seconds=30))
+    sim1.run(duration=datetime.timedelta(hours=30))
     Logger.critical('use time {}'.format(time.time() - start_time))
