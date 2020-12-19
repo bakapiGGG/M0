@@ -51,6 +51,7 @@ class BirthDeath(Sandbox):
     def death(self):
         self.__population -= 1
         Logger.info("{0}\tDeath (Population: #{1}!".format(self.clock_time, self.__population))
+        print("{0}\tDeath (Population: #{1}!)".format(self.clock_time, self.__population))
 
 if __name__ == '__main__':
     run_code = 'O2DESPy demo 2'
