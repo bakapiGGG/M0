@@ -8,13 +8,13 @@ class Queue(Sandbox):
         self.__seed = seed
         self.__number_waiting = 0
     
+    @property
+    def seed(self):
+        return self.__seed
+    
     @seed.setter
     def seed(self, value):
         self.__seed = value
-
-    @property
-    def on_generate(self):
-        return self.__on_generate
 
     @property
     def number_waiting(self):
