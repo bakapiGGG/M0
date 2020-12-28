@@ -4,7 +4,7 @@ from O2DESPy_demos.demo10.queue import Queue
 from O2DESPy_demos.demo10.server import Server
 
 
-class ConstrainedTandemQueuePull(Sandbox):
+class ConstrainedTandemQueuePush(Sandbox):
     def __init__(self, queue_capacity, server_capacity, hourly_arrival_rate, hourly_service_rate, seed=0):
         super().__init__()
         self.__queue_capacity = queue_capacity
@@ -20,16 +20,14 @@ class ConstrainedTandemQueuePull(Sandbox):
         
         # Connets 1st Queue & Server
         self.__generator.on_generate = [self.queue1.enqueue]
-        self.__generator.on_generate = [self.server1.request_to_start]
-        self.__server1.on_start = [self.queue1.dequeue]
+        self.__queue1.__on_dequeue = [self.server1.start]
+        self.__server1.on_change_accessibility = [self.queue1.update_to_dequeue]
 
         # Connects for 2nd Queue & Server
-        self.__server1.on_finish = [self.queue2.enqueue]
-        self.__server1.on_finish = [self.server2.request_to_start]
-        self.__server2.on_start = [self.queue2.dequeue]
-
-        # Enclose 2nd Server
-        self.__server2.on_ready_to_finish = [self.server2.finish]
+        self.__server1.on_depart = [self.queue2.enqueue]
+        self.__queue2.on_dequeue = [self.server2.start]
+        self.__queue2.on_change_accessibility = [self.server1.update_to_depart]
+        self.__server2.on_change_accessibility = [self.queue2.update_to_dequeue]
 
     @property
     def queue_capacity(self):
