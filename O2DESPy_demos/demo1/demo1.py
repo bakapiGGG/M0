@@ -10,13 +10,19 @@ import random
 class HelloWorld(Sandbox):
     def __init__(self, hourly_arrival_rate, seed=0):
         super().__init__()
+        self.__seed = seed
         self.__hourly_arrival_rate = hourly_arrival_rate
         self.__count = 0
-        self.__seed = seed
-        # why need add hour counter?
-        self.__hc = self.add_hour_counter()
 
         self.schedule([self.arrive], timedelta(seconds=0))
+
+    @property
+    def seed(self):
+        return self.__seed
+
+    @seed.setter
+    def seed(self, value):
+        self.__seed = value  
 
     @property
     def hourly_arrival_rate(self):
@@ -26,25 +32,11 @@ class HelloWorld(Sandbox):
     def count(self):
         return self.__count
 
-    @property
-    def seed(self):
-        return self.__seed
-
-    @seed.setter
-    def seed(self, value):
-        self.__seed = value
-
-    @property
-    def hc(self):
-        return self.__hc
-
     def arrive(self):
+        print("{0}\tHello World #{1}!".format(self.clock_time, self.__count))
         Logger.info("{0}\tHello World #{1}!".format(self.clock_time, self.__count))
-        # do we need to print for user to see?
         self.__count += 1
-        # self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
-        self.schedule([self.arrive], timedelta(hours=5))
-
+        self.schedule([self.arrive], timedelta(hours=round(random.expovariate(1 / self.__hourly_arrival_rate),2)))
 
 if __name__ == '__main__':
     run_code = 'O2DESPy demo 1'
@@ -64,10 +56,8 @@ if __name__ == '__main__':
 
     # Demo 1
     Logger.info("Demo 1 - Hello world")
-    sim1 = HelloWorld(10, seed=3)
-    # hc1 not used anywhere 
-    hc1 = sim1.add_hour_counter()
-    sim1.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
+    sim1 = HelloWorld(2, seed=1)
+    sim1.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=0, second =0))
     # sim1.run(event_count=10)
     # sim1.run(speed=10)
     # sim1.run(terminate=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
