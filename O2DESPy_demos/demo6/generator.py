@@ -3,7 +3,6 @@ from O2DESPy.log.logger import Logger
 from datetime import timedelta
 import random
 
-
 class Generator(Sandbox):
     def __init__(self, hourly_rate, seed=0):
         super().__init__()

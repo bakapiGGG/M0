@@ -9,13 +9,20 @@ import random
 class BirthDeath(Sandbox):
     def __init__(self, hourly_birth_rate, hourly_death_rate, seed=0):
         super().__init__()
+        self.__seed = seed
         self.__hourly_birth_rate = hourly_birth_rate
         self.__hourly_death_rate = hourly_death_rate
         self.__population = 0
-        self.__seed = seed
 
-        self.__hc = self.add_hour_counter()
         self.schedule([self.birth], timedelta(seconds=0))
+
+    @property
+    def seed(self):
+        return self.__seed
+
+    @seed.setter
+    def seed(self, value):
+        self.__seed = value
 
     @property
     def hourly_birth_rate(self):
@@ -28,30 +35,18 @@ class BirthDeath(Sandbox):
     @property
     def population(self):
         return self.__population
-
-    @property
-    def seed(self):
-        return self.__seed
-
-    @seed.setter
-    def seed(self, value):
-        self.__seed = value
-    
-    @property
-    def hc(self):
-        return self.__hc
     
     def birth(self):
         self.__population += 1
-        Logger.info("{0}\tBirth (Population: #{1}!".format(self.clock_time, self.__population))
         print("{0}\tBirth (Population: #{1}!)".format(self.clock_time, self.__population))
-        self.schedule([self.birth], timedelta(hours=round(random.expovariate(1 / self.__hourly_birth_rate))))
-        self.schedule([self.death], timedelta(hours=round(random.expovariate(1 / self.__hourly_death_rate))))
+        Logger.info("{0}\tBirth (Population: #{1}!)".format(self.clock_time, self.__population))
+        self.schedule([self.birth], timedelta(hours=round(random.expovariate(1 / self.__hourly_birth_rate),2)))
+        self.schedule([self.death], timedelta(hours=round(random.expovariate(1 / self.__hourly_death_rate),2)))
 
     def death(self):
         self.__population -= 1
-        Logger.info("{0}\tDeath (Population: #{1}!".format(self.clock_time, self.__population))
         print("{0}\tDeath (Population: #{1}!)".format(self.clock_time, self.__population))
+        Logger.info("{0}\tDeath (Population: #{1}!)".format(self.clock_time, self.__population))
 
 if __name__ == '__main__':
     run_code = 'O2DESPy demo 2'
@@ -71,9 +66,8 @@ if __name__ == '__main__':
 
     # Demo 2
     Logger.info("Demo 2 - Birth Death Process")
-    sim2 = BirthDeath(2, 3, seed=3)
-    hc2 = sim2.add_hour_counter()
-    # sim2.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
+    sim2 = BirthDeath(20, 1, seed=1)
+    sim2.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=0, second =0))
     # sim2.run(event_count=10)
     # sim2.run(speed=10)
     # sim2.run(terminate=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
