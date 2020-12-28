@@ -1,7 +1,6 @@
 from O2DESPy.sandbox import Sandbox
 from O2DESPy.log.logger import Logger
 
-
 class Queue(Sandbox):
     def __init__(self, seed=0):
         super().__init__()
@@ -9,6 +8,7 @@ class Queue(Sandbox):
         self.__number_waiting = 0
         self.__able_to_dequeue = True
         self.__on_dequeue = []
+        
     @property
     def seed(self):
         return self.__seed

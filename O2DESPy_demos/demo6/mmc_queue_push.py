@@ -1,7 +1,7 @@
 from O2DESPy.sandbox import Sandbox
-from O2DESPy_demos.demo5.generator import Generator
-from O2DESPy_demos.demo5.queue_ import Queue
-from O2DESPy_demos.demo5.server import Server
+from O2DESPy_demos.demo6.generator import Generator
+from O2DESPy_demos.demo6.queue_ import Queue
+from O2DESPy_demos.demo6.server import Server
 
 
 class MMcQueuePush(Sandbox):
@@ -15,7 +15,6 @@ class MMcQueuePush(Sandbox):
         self.__queue = self.add_child(Queue())
         self.__server = self.add_child(Server(self.__capacity, self.__hourly_service_rate))
 
-        # Not sure how this encapsulates the += part in the c# code
         self.__generator.on_generate = [self.queue.enqueue]
         self.__queue.on_dequeue = [self.server.start]
         self.__server.on_change_accessibility = [self.queue.update_to_dequeue(able_to_dequeue)]
