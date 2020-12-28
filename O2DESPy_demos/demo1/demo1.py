@@ -13,6 +13,7 @@ class HelloWorld(Sandbox):
         self.__hourly_arrival_rate = hourly_arrival_rate
         self.__count = 0
         self.__seed = seed
+        # why need add hour counter?
         self.__hc = self.add_hour_counter()
 
         self.schedule([self.arrive], timedelta(seconds=0))
@@ -39,6 +40,7 @@ class HelloWorld(Sandbox):
 
     def arrive(self):
         Logger.info("{0}\tHello World #{1}!".format(self.clock_time, self.__count))
+        # do we need to print for user to see?
         self.__count += 1
         # self.schedule([self.arrive], timedelta(seconds=round(random.expovariate(1 / self.__hourly_arrival_rate))))
         self.schedule([self.arrive], timedelta(hours=5))
@@ -63,6 +65,7 @@ if __name__ == '__main__':
     # Demo 1
     Logger.info("Demo 1 - Hello world")
     sim1 = HelloWorld(10, seed=3)
+    # hc1 not used anywhere 
     hc1 = sim1.add_hour_counter()
     sim1.warmup(till=datetime.datetime(year=1, month=1, day=1, hour=0, minute=5))
     # sim1.run(event_count=10)

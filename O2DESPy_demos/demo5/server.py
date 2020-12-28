@@ -12,38 +12,23 @@ class Server(Sandbox):
         self.__number_pending = 0
         self.__number_in_service = 0
         self.__on_start = []
+        self.__seed = seed 
 
     @property
     def capacity(self):
         return self.__capacity
 
-    @capacity.setter
-    def capacity(self, value):
-        self.__capacity = value
-
     @property
     def hourly_service_rate(self):
         return self.__hourly_service_rate
-
-    @hourly_service_rate.setter
-    def hourly_service_rate(self, value):
-        self.__hourly_service_rate = value
 
     @property
     def number_pending(self):
         return self.__number_pending
 
-    @number_pending.setter
-    def number_pending(self, value):
-        self.__number_pending = value
-
     @property
     def number_in_service(self):
         return self.__number_in_service
-
-    @number_in_service.setter
-    def number_in_service(self, value):
-        self.__number_in_service = value
 
     @property
     def on_start(self):
@@ -52,6 +37,14 @@ class Server(Sandbox):
     @on_start.setter
     def on_start(self, value):
         self.__on_start.append(value)
+    
+    @property
+    def seed(self):
+        return self.__seed
+
+    @seed.setter
+    def seed(self, value):
+        self.__seed = value
 
     def request_to_start(self):
         self.__number_pending += 1
