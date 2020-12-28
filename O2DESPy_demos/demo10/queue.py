@@ -84,6 +84,7 @@ class Queue(Sandbox):
             if self.__number_waiting < self.__capacity:
                 if len(func) == 1:
                     func[0]()
-                func[0](**func[1])
+                else:
+                    func[0](**func[1])
             
         

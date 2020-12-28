@@ -19,13 +19,14 @@ class ConstrainedTandemQueuePull(Sandbox):
         self.__server2 = self.add_child(Server(self.__server_capacity, self.__hourly_service_rate))
         
         # Connets 1st Queue & Server
-        self.__generator.on_generate = [self.queue1.enqueue]
+        self.__generator.on_generate = [self.queue1.request_to_enqueue]
         self.__generator.on_generate = [self.server1.request_to_start]
         self.__server1.on_start = [self.queue1.dequeue]
 
         # Connects for 2nd Queue & Server
-        self.__server1.on_finish = [self.queue2.enqueue]
-        self.__server1.on_finish = [self.server2.request_to_start]
+        self.__server1.on_ready_to_finish = [self.queue2.request_to_enqueue]
+        self.__server1.on_ready_to_finish = [self.server2.request_to_start]
+        self.__server2.on_enqueue = [self.server1.finish]
         self.__server2.on_start = [self.queue2.dequeue]
 
         # Enclose 2nd Server

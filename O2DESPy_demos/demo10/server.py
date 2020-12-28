@@ -107,6 +107,7 @@ class Server(Sandbox):
             if self.__number_in_service + self.__number_pending_depart < self.__capacity:
                 if len(func) == 1:
                     func[0]()
-                func[0](**func[1])
+                else:
+                    func[0](**func[1])
 
 # public event Action<bool> OnChangeAccessibility = (accessible) => { }; to pass "accessible" parameter into the function 
