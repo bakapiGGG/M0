@@ -1,20 +1,21 @@
 from O2DESPy.sandbox import Sandbox
-from O2DESPy_demos.demo7.generator import Generator
-from O2DESPy_demos.demo7.queue_ import Queue
-from O2DESPy_demos.demo7.server import Server
+from O2DESPy_demos.demo9.generator import Generator
+from O2DESPy_demos.demo9.queue_ import Queue
+from O2DESPy_demos.demo9.server import Server
 
 
-class TandemQueuePull(Sandbox):
-    def __init__(self, capacity, hourly_arrival_rate, hourly_service_rate, seed=0):
+class ConstrainedTandemQueuePull(Sandbox):
+    def __init__(self, queue_capacity, server_capacity, hourly_arrival_rate, hourly_service_rate, seed=0):
         super().__init__()
-        self.__capacity = capacity
+        self.__queue_capacity = queue_capacity
+        self.__server_capacity = __server_capacity
         self.__hourly_arrival_rate = hourly_arrival_rate
         self.__hourly_service_rate = hourly_service_rate
 
         self.__generator = self.add_child(Generator(self.__hourly_arrival_rate))
-        self.__queue1 = self.add_child(Queue())
+        self.__queue1 = self.add_child(Queue(self.__queue_capacity))
         self.__server1 = self.add_child(Server(self.__capacity, self.__hourly_service_rate))
-        self.__queue2 = self.add_child(Queue())
+        self.__queue2 = self.add_child(Queue(self.__queue_capacity))
         self.__server2 = self.add_child(Server(self.__capacity, self.__hourly_service_rate))
         
         # Connets 1st Queue & Server
@@ -27,13 +28,24 @@ class TandemQueuePull(Sandbox):
         self.__server1.on_finish = [self.server2.request_to_start]
         self.__server2.on_start = [self.queue2.dequeue]
 
-    @property
-    def capacity(self):
-        return self.__capacity
+        # Enclose 2nd Server
+        self.__server2.on_ready_to_finish = [self.server2.finish]
 
-    @capacity.setter
-    def capacity(self, value):
-        self.__capacity = value
+    @property
+    def queue_capacity(self):
+        return self.__queue_capacity
+
+    @queue_capacity.setter
+    def queue_capacity(self, value):
+        self.__queue_capacity = value
+
+    @property
+    def server_capacity(self):
+        return self.__server_capacity
+
+    @server_capacity.setter
+    def server_capacity(self, value):
+        self.__server_capacity = value
 
     @property
     def hourly_arrival_rate(self):

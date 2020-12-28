@@ -7,12 +7,21 @@ import random
 class Server(Sandbox):
     def __init__(self, capacity, hourly_service_rate, seed=0):
         super().__init__()
+        self.__seed = seed
         self.__capacity = capacity
         self.__hourly_service_rate = hourly_service_rate
         self.__number_pending = 0
         self.__number_in_service = 0
         self.__on_start = []
-        self.__on_finish = []
+        self.__on_ready_to_finish = []
+    
+    @property
+    def seed(self):
+        return self.__seed
+    
+    @seed.setter
+    def seed(self, value):
+        self.__seed = value
 
     @property
     def capacity(self):
@@ -39,12 +48,12 @@ class Server(Sandbox):
         self.__on_start.append(value)
     
     @property
-    def on_finish(self):
-        return self.__on_finish
+    def on_ready_to_finish(self):
+        return self.__on_ready_to_finish
 
-    @on_finish.setter
-    def on_finish(self, value):
-        self.__on_finish.append(value)
+    @on_ready_to_finish.setter
+    def on_ready_to_finish(self, value):
+        self.__on_ready_to_finish.append(value)
 
     def request_to_start(self):
         self.__number_pending += 1
@@ -53,27 +62,32 @@ class Server(Sandbox):
         if self.__number_in_service < self.__capacity:
             self.start()
         
+    
     def start(self):
         self.__number_pending -= 1
         self.__number_in_service += 1
         print("{0}\t{1}\tStart. #Pending: {2}. #In-Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
         Logger.info("{0}\t{1}\tStart. #Pending: {2}. #In-Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
-        self.schedule([self.finish], timedelta(hours=round(random.expovariate(1 / self.__hourly_service_rate))))
+        self.schedule([self.ready_to_finish], timedelta(hours=round(random.expovariate(1 / self.__hourly_service_rate))))
         for func in self.__on_start:
                 if len(func) == 1:
                     func[0]()
                 else:
                     func[0](**func[1])
 
-    def finish(self):
-        self.__number_in_service -= 1
-        print("{0}\t{1}\tStart. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
-        Logger.info("{0}\t{1}\tStart. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
-        if self.__number_pending > 0:
-            self.start()
-        for func in self.__on_finish:
+
+    def ready_to_finish(self):
+        print("{0}\t{1}\tReadyToFinish. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
+        Logger.info("{0}\t{1}\tReadyToFinish. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
+        for func in self.__on_ready_to_finish:
                 if len(func) == 1:
                     func[0]()
                 else:
                     func[0](**func[1])
-
+    
+    def finish(self):
+        self.__number_in_service -= 1
+        print("{0}\t{1}\tFinish. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
+        Logger.info("{0}\t{1}\tFinish. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.__number_pending, self.__number_in_service))
+        if self.__number_pending > 0:
+            self.start()
