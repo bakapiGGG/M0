@@ -82,11 +82,25 @@ class SandboxStatics(IAssets):
 
 
 class Sandbox(ISandbox):
+    class Action:
+        def __init__(self):
+            self.__action_delegate = []
+
+        @property
+        def action_delegate(self):
+            return self.__action_delegate
+
+        def add_event_method(self, event):
+            if callable(event):
+                event = (event,)
+            self.__action_delegate.append(event)
+
     __count = 0
 
     def __init__(self, seed=0, id=None, pointer=Pointer()):
         super().__init__(seed, id, pointer)
         assets = SandboxStatics()
+        self.__action = self.Action()
         self.__assets = assets
         self.__seed = seed
         self.__id = id
@@ -100,9 +114,10 @@ class Sandbox(ISandbox):
         self.__clock_time = datetime.datetime.min
         self.__realtime_for_last_run = None
         if self.warmup_handler() == -1:
-            self.__on_warmed_up = []
+            self.__on_warmed_up = self.create_event()
         else:
-            self.__on_warmed_up = [[self.warmup_handler()]]
+            self.__on_warmed_up = self.create_event()
+            self.__on_warmed_up.add_event_method(self.warmup_handler)
         self.__hour_counters = []
 
     @property
@@ -175,17 +190,15 @@ class Sandbox(ISandbox):
     def log_file(self, log_file):
         self.__log_file = log_file
 
-    def schedule(self, action, clock_time=None, tag=None):
-        if len(action) > 1:
-            paras = list(action[1])[0] if isinstance(action[1], list) else action[1]
-            if type(clock_time) is datetime.datetime:
-                Logger.info(
-                    'Schedule task "{}" arrive at: {}. Owner: {} | {}'.format(paras, clock_time, self.id, action[1]))
-            elif type(clock_time) is datetime.timedelta:
-                Logger.info(
-                    'Schedule task "{}" arrive at: {}. Owner: {} | {}.'.format(paras, self.clock_time + clock_time,
-                                                                               self.id, action[1]))
+    def create_event(self):
+        event = self.Action()
+        return event
 
+    def schedule(self, action, clock_time=None, tag=None):
+        if clock_time is None:
+            clock_time = datetime.timedelta(seconds=0)
+        if callable(action):
+            action = (action,)
         if isinstance(clock_time, pd.Timestamp):
             clock_time = clock_time.to_pydatetime()
         if type(clock_time) is datetime.datetime:
@@ -194,7 +207,6 @@ class Sandbox(ISandbox):
             self.__future_event_list.add(
                 Event(owner=self, action=action, scheduled_time=self.clock_time + clock_time, tag=tag))
         else:
-            Logger.error("clock_time type error {}".format(clock_time))
             raise TypeError()
 
     @property
@@ -232,20 +244,19 @@ class Sandbox(ISandbox):
             while True:
                 n += 1
                 head = self.head_event
-                # print('1', head.scheduled_time, kwargs['terminate'], head.scheduled_time <= kwargs['terminate'])
                 if head is not None and head.scheduled_time <= kwargs['terminate']:  # Finish all event or time out
                     start_time = time.time()
-                    Logger.warning(
+                    Logger.info(
                         '{} {} {} {} {}'.format('----' * 9, 'Run once', n, '', '----' * 10))
                     self.run()
                     use_time = time.time() - start_time
                     use_time = 'Time_out_:{}'.format(use_time) if use_time > 0.02 else use_time
-                    Logger.warning('{} {} {} {} {} {} Time: {}'
+                    Logger.info('{} {} {} {} {} {} Time: {}'
                                    .format('----' * 9, 'Run once', n, 'done', '----' * 9,
                                            use_time, '\n'))
                     if n % 200 == 0:
                         current_time = time.time()
-                        Logger.critical('{} events have been processed! Use time: {}. Current time: {}'.format(n, current_time - step_time, self.clock_time))
+                        Logger.info('{} events have been processed! Use time: {}. Current time: {}'.format(n, current_time - step_time, self.clock_time))
                         step_time = current_time
 
                 else:
@@ -276,14 +287,31 @@ class Sandbox(ISandbox):
     def add_child(self, child):
         self.__children.append(child)
         child.parent = self
-        self.__on_warmed_up += child.on_warmed_up
+        self.__on_warmed_up.add_event_method(self.on_warmed_up)
         return child
 
     def add_hour_counter(self, keep_history=False):
         hc = HourCounter(self, keep_history=keep_history)
         self.__hour_counters.append(hc)
-        self.__on_warmed_up.append([hc.warmed_up])
+        self.__on_warmed_up.add_event_method(hc.warmed_up)
         return hc
+
+    def invoke(self, event):
+        if isinstance(event, tuple):
+            for func in event[0].action_delegate:
+                if callable(func):
+                    func()
+                else:
+                    try:
+                        func[0](*event[1:])
+                    except:
+                        func[0]()
+        else:
+            for func in event.action_delegate:
+                if callable(func):
+                    func()
+                else:
+                    func[0](*func[1:])
 
     def to_string(self):
         _id = self.__id
@@ -301,11 +329,7 @@ class Sandbox(ISandbox):
             if self.__parent is not None:
                 return self.__parent.warmup(kwargs['till'])
             result = self.run(terminate=kwargs['till'])
-            for func in self.__on_warmed_up:
-                if len(func) == 1:
-                    func[0]()
-                else:
-                    func[0](**func[1])
+            self.invoke(self.__on_warmed_up)
             return result
 
     def warmup_handler(self):
