@@ -9,7 +9,7 @@ class PingPongPlayer(Sandbox):
         self.__index = index
         self.delay_time_expected = delay_time_expected
         self.delay_time_CV = delay_time_CV
-        self.seed = seed
+        random.seed(seed)
         self.count = 0
         self.on_send = self.create_event()
 
@@ -28,4 +28,4 @@ class PingPongPlayer(Sandbox):
     def receive(self):
         self.count += 1
         print(f"{self.clock_time}\t Receive. Player #{self.__index}, Count: {self.count}")
-        self.schedule(self.send, datetime.timedelta(seconds=round(random.gammavariate(self.delay_time_expected, self.delay_time_CV))))
+        self.schedule(self.send, datetime.timedelta(seconds=round(random.gammavariate(self.delay_time_expected, self.delay_time_CV),2)))

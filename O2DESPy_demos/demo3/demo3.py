@@ -6,7 +6,7 @@ import random
 class MMcQueue(Sandbox):
     def __init__(self, hourly_arrival_rate, hourly_service_rate, capacity, seed=0):
         super().__init__()
-        self.seed = seed
+        random.seed(seed)
         self.hourly_arrival_rate = hourly_arrival_rate
         self.hourly_service_rate = hourly_service_rate
         self.capacity = capacity

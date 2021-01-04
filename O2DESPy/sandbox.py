@@ -6,6 +6,7 @@ from O2DESPy.hour_counter import HourCounter
 from O2DESPy.assets import IAssets
 import pandas as pd
 import time
+import random
 from O2DESPy.log.logger import Logger
 import datetime
 
@@ -13,10 +14,10 @@ import datetime
 class ISandbox(ABC):
     def __init__(self, index=None, id=None, pointer=None, seed=None, parent=None, children=None, clock_time=None,
                  log_file=None, debug_mode=None):
+        random.seed(seed)
         self.__index = index
         self.__id = id
         self.__pointer = pointer
-        self.__seed = seed
         self.__parent = parent
         self.__children = children
         self.__clock_time = clock_time
@@ -34,11 +35,7 @@ class ISandbox(ABC):
     @property
     def pointer(self):
         return self.__pointer
-
-    @property
-    def seed(self):
-        return self.__seed
-
+        
     @property
     def parent(self):
         return self.__parent

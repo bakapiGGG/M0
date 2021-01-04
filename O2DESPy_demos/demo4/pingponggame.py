@@ -2,6 +2,7 @@ from O2DESPy.sandbox import Sandbox
 from O2DESPy.log.logger import Logger
 from O2DESPy.application.config import Config
 import datetime
+import random
 from O2DESPy_demos.demo4.pingpongplayer import PingPongPlayer
 
 
@@ -24,7 +25,7 @@ class PingPongGame(Sandbox):
         self.player1.on_send.add_event_method(self.player2.receive)
         self.player2.on_send.add_event_method(self.player1.receive)
 
-        self.seed = seed
+        random.seed(seed)
 
         self.schedule(self.player1.receive)
 
@@ -33,4 +34,4 @@ if __name__ == '__main__':
     # Demo 4
     Logger.info("Demo 3 - PingPong")
     sim4 = PingPongGame(1, 1, 1, 2, 2, 2)
-    sim4.run(duration=datetime.timedelta(hours=1))
+    sim4.run(duration=datetime.timedelta(minutes=5))
