@@ -14,9 +14,9 @@ class ConstrainedTandemQueuePull(Sandbox):
         self.hourly_service_rate = hourly_service_rate
 
         self.generator = self.add_child(Generator(self.hourly_arrival_rate))
-        self.queue1 = self.add_child(Queue(self.queue_capacity))
+        self.queue1 = self.add_child(Queue(self.queue_capacity, queue_id=1))
         self.server1 = self.add_child(Server(self.server_capacity, self.hourly_service_rate))
-        self.queue2 = self.add_child(Queue(self.queue_capacity))
+        self.queue2 = self.add_child(Queue(self.queue_capacity, queue_id=2))
         self.server2 = self.add_child(Server(self.server_capacity, self.hourly_service_rate))
         
         # Connects 1st Queue & Server
