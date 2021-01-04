@@ -18,7 +18,7 @@ class MMcQueuePush(Sandbox):
 
         self.generator.on_generate.add_event_method(self.queue.enqueue)
         self.queue.on_dequeue.add_event_method(self.server.start)
-        self.server.on_change_accessibility.add_event_method((self.queue.update_to_dequeue, self.queue.able_to_dequeue))
+        self.server.on_change_accessibility.add_event_method(self.queue.update_to_dequeue)
 
 
 if __name__ == '__main__':

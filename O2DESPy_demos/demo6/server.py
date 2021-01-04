@@ -28,4 +28,4 @@ class Server(Sandbox):
             self.schedule(self.change_accessibility)
 
     def change_accessibility(self):
-        self.invoke(self.on_change_accessibility)
+        self.invoke((self.on_change_accessibility, self.number_in_service < self.capacity))

@@ -33,6 +33,7 @@ class Server(Sandbox):
         self.invoke(self.on_ready_to_finish)
     
     def finish(self):
+        print("{0}\t{1}\tFinish. #Pending: {2}. #In_Service: {3}".format(self.clock_time, type(self).__name__, self.number_pending, self.number_in_service))
         self.number_in_service -= 1
         if self.number_pending > 0:
             self.start()
