@@ -1,10 +1,11 @@
 from O2DESPy.sandbox import Sandbox
+import random
 
 
 class Queue(Sandbox):
     def __init__(self, seed=0):
         super().__init__()
-        self.seed = seed
+        random.seed(seed)
         self.number_waiting = 0
 
     def enqueue(self):

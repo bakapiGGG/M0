@@ -6,11 +6,12 @@ import random
 class Server(Sandbox):
     def __init__(self, capacity, hourly_service_rate, seed=0):
         super().__init__()
+        random.seed(seed)
         self.capacity = capacity
         self.hourly_service_rate = hourly_service_rate
         self.number_in_service = 0
-        self.seed = seed
         self.on_change_accessibility = self.create_event()
+        # self.__on_change_accessibility = []
     
     def start(self):
         if self.number_in_service >= self.capacity:
@@ -29,3 +30,10 @@ class Server(Sandbox):
 
     def change_accessibility(self):
         self.invoke((self.on_change_accessibility, self.number_in_service < self.capacity))
+        '''
+        for func in self.__on_change_accessibility:
+            if len(func) == 1:
+                func[0]()
+            else:
+                func[0](**func[1])
+        '''
