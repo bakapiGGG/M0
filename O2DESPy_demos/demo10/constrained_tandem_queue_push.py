@@ -3,21 +3,22 @@ from O2DESPy_demos.demo10.generator import Generator
 from O2DESPy_demos.demo10.queue_ import Queue
 from O2DESPy_demos.demo10.server import Server
 import datetime
-
+import random
 
 class ConstrainedTandemQueuePush(Sandbox):
     def __init__(self, queue_capacity, server_capacity, hourly_arrival_rate, hourly_service_rate, seed=0):
         super().__init__()
+        random.seed(seed)
         self.queue_capacity = queue_capacity
         self.server_capacity = server_capacity
         self.hourly_arrival_rate = hourly_arrival_rate
         self.hourly_service_rate = hourly_service_rate
 
         self.generator = self.add_child(Generator(self.hourly_arrival_rate))
-        self.queue1 = self.add_child(Queue(self.queue_capacity))
-        self.server1 = self.add_child(Server(self.server_capacity, self.hourly_service_rate))
-        self.queue2 = self.add_child(Queue(self.queue_capacity))
-        self.server2 = self.add_child(Server(self.server_capacity, self.hourly_service_rate))
+        self.queue1 = self.add_child(Queue(self.queue_capacity, queue_id=1))
+        self.server1 = self.add_child(Server(self.server_capacity, self.hourly_service_rate, server_id=1))
+        self.queue2 = self.add_child(Queue(self.queue_capacity, queue_id=2))
+        self.server2 = self.add_child(Server(self.server_capacity, self.hourly_service_rate, server_id=2))
         
         # Connects 1st Queue & Server
         self.generator.on_generate.add_event_method(self.queue1.enqueue)
@@ -33,6 +34,6 @@ class ConstrainedTandemQueuePush(Sandbox):
 
 if __name__ == '__main__':
     # Demo 10
-    sim1 = ConstrainedTandemQueuePush(queue_capacity=2, server_capacity=1, hourly_arrival_rate=5, hourly_service_rate=5)
+    sim1 = ConstrainedTandemQueuePush(queue_capacity=2, server_capacity=1, hourly_arrival_rate=1, hourly_service_rate=2)
     hc1 = sim1.add_hour_counter()
-    sim1.run(duration=datetime.timedelta(hours=100))
+    sim1.run(duration=datetime.timedelta(hours=10))

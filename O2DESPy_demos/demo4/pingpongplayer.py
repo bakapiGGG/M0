@@ -6,10 +6,10 @@ import random
 class PingPongPlayer(Sandbox):
     def __init__(self, index, delay_time_expected, delay_time_CV, seed=0):
         super().__init__()
+        random.seed(seed)
         self.__index = index
         self.delay_time_expected = delay_time_expected
         self.delay_time_CV = delay_time_CV
-        random.seed(seed)
         self.count = 0
         self.on_send = self.create_event()
 
