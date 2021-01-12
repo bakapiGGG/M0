@@ -321,7 +321,7 @@ class Sandbox(ISandbox):
         if 'period' in kwargs:
             if self.__parent is not None:
                 return self.__parent.warmup(kwargs['period'])
-            return self.warmup(self.clock_time + kwargs['period'])
+            return self.warmup(till=self.clock_time + kwargs['period'])
         elif 'till' in kwargs:
             if self.__parent is not None:
                 return self.__parent.warmup(kwargs['till'])
