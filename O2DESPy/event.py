@@ -33,17 +33,7 @@ class Event:
         return self.__tag
 
     def invoke(self):
-        # Comments
-        Logger.info('{} {} {} {}'.format(
-            'Event invoke. Event id: {}. The following function is going to run.'.format(self.index),
-            str(self.__action[0]).split(' ')[2],
-            'Scheduled_time:',
-            self.scheduled_time))
-
-        if len(self.__action) == 1:
-            self.__action[0]()
-        else:
-            self.__action[0](**self.__action[1])
+        self.__action[0](*self.__action[1:])
 
     def __str__(self):
         return f'{self.__tag}#{self.__index}'
